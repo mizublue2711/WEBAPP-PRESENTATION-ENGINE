@@ -10,6 +10,8 @@ import {
   SpatialConfigState,
   ThemePresetId,
 } from './types';
+import { languageManager, t, TranslationKey } from './i18n/languageManager';
+import { createLanguageSwitcher } from './components/ui/LanguageSwitcher';
 
 export interface DockCallbacks {
   onStateChange: (partial: Partial<SpatialConfigState>) => void;
@@ -147,33 +149,62 @@ export class SpatialControlDockUI {
     });
   }
 
+  private getWizardStepInfo(): { step: number; title: string } {
+    switch (this.activeTab) {
+      case 0:
+        return { step: 1, title: t('wizard.step1') };
+      case 3:
+        return { step: 2, title: t('wizard.step2') };
+      case 2:
+        return { step: 3, title: t('wizard.step3') };
+      case 1:
+        return { step: 4, title: t('wizard.step4') };
+      case 4:
+      default:
+        return { step: 5, title: t('wizard.step5') };
+    }
+  }
+
+  private updateWizardBanner(): void {
+    const banner = this.container.querySelector('#cyber-wizard-step-banner');
+    if (!banner) return;
+    const info = this.getWizardStepInfo();
+    const kicker = banner.querySelector('#cyber-wizard-kicker');
+    if (kicker) kicker.textContent = `${t('wizard.badge')} · STEP 0${info.step}/05`;
+    const title = banner.querySelector('#cyber-wizard-title');
+    if (title) title.textContent = info.title;
+  }
+
   private buildDOM(): void {
+    const wizardInfo = this.getWizardStepInfo();
+
     this.container.innerHTML = `
       <!-- TOP PERIMETER BAR -->
       <header class="cyber-top-bar">
         <div class="cyber-brand-cluster">
           <button id="cyber-dock-toggle-btn" class="cyber-btn-swiss cyber-btn-accent" type="button">
-            [SYS//CONFIG DOCK ▾]
+            ${t('topbar.dockToggle')}
           </button>
-          <span class="cyber-brand-title">ARTIFICIALCRAFT.SPACE</span>
+          <span class="cyber-brand-title">${t('topbar.brand')}</span>
           <span class="cyber-sep">·</span>
-          <span id="cyber-cam-mode-badge" class="cyber-cam-mode-badge mode-tunnel">MODE A: TUNNEL FLIGHT</span>
+          <span id="cyber-cam-mode-badge" class="cyber-cam-mode-badge mode-tunnel">${t('topbar.modeTunnel')}</span>
         </div>
 
         <div class="cyber-telemetry-cluster">
-          <span id="cyber-active-zone-label" class="cyber-zone-readout">ZONE 01 · UI GLASS SCREEN</span>
+          <span id="cyber-active-zone-label" class="cyber-zone-readout">ZONE 01 · ${t('zone.0.name').toUpperCase()}</span>
           <span class="cyber-sep">/</span>
-          <span id="cyber-z-coord-readout" class="cyber-mono-num">CAM Z: +10.20m</span>
+          <span id="cyber-z-coord-readout" class="cyber-mono-num">${t('topbar.camZ')}: +10.20m</span>
           <span class="cyber-sep">/</span>
           <span id="cyber-selected-node-banner" class="cyber-node-readout">NODE: /src/core/registry.ts (~50 tokens)</span>
         </div>
 
         <div class="cyber-actions-cluster">
+          <div id="cyber-top-lang-slot"></div>
           <button id="cyber-top-export-btn" class="cyber-btn-swiss cyber-btn-export" type="button">
-            [EXPORT AUTO-FLY CLIP (.WEBM)]
+            ${t('topbar.exportBtn')}
           </button>
           <button id="cyber-audio-btn" class="cyber-btn-swiss" type="button">
-            AUDIO: ON
+            ${t('topbar.audioOn')}
           </button>
         </div>
       </header>
@@ -181,12 +212,12 @@ export class SpatialControlDockUI {
       <!-- FLOATING [ESC // RETURN TO TUNNEL FLIGHT] BAR (VISIBLE IN NODE_INSPECT_MODE) -->
       <div id="cyber-esc-return-bar" class="cyber-esc-return-bar hidden">
         <div class="cyber-esc-meta">
-          <span class="cyber-esc-kicker">MODE B · NODE INSPECT FOCUS (SCROLL PAUSED)</span>
+          <span id="cyber-esc-kicker" class="cyber-esc-kicker">${t('esc.kicker')}</span>
           <span id="cyber-esc-node-label" class="cyber-esc-node-name">/src/core/registry.ts</span>
-          <span id="cyber-esc-anchor-label" class="cyber-esc-anchor-info">ANCHOR SAVED: 4% (Z = +9.49m)</span>
+          <span id="cyber-esc-anchor-label" class="cyber-esc-anchor-info">${t('esc.anchorSaved')}: 4% (Z = +9.49m)</span>
         </div>
         <button id="cyber-esc-return-btn" class="cyber-btn-swiss cyber-esc-action-btn" type="button">
-          [ESC // RETURN TO TUNNEL FLIGHT]
+          ${t('esc.returnBtn')}
         </button>
       </div>
 
@@ -194,21 +225,27 @@ export class SpatialControlDockUI {
       <aside id="cyber-config-dock" class="cyber-config-dock">
         <div class="cyber-dock-header">
           <div class="cyber-dock-title-group">
-            <span class="cyber-dock-kicker">DUAL-STATE CAMERA · 01:00 AM</span>
-            <h2 class="cyber-dock-heading">Spatial Configurator Dock</h2>
+            <span class="cyber-dock-kicker">${t('dock.kicker')}</span>
+            <h2 class="cyber-dock-heading">${t('dock.heading')}</h2>
           </div>
-          <button id="cyber-dock-close-btn" class="cyber-btn-icon" type="button" title="Collapse Config Dock (Key: H)">
-            [COLLAPSE ×]
+          <button id="cyber-dock-close-btn" class="cyber-btn-icon" type="button" title="${t('dock.collapseBtn')}">
+            ${t('dock.collapseBtn')}
           </button>
+        </div>
+
+        <!-- WIZARD STEP BANNER -->
+        <div id="cyber-wizard-step-banner" class="cyber-wizard-step-banner">
+          <span id="cyber-wizard-kicker" class="cyber-wizard-kicker">${t('wizard.badge')} · STEP 0${wizardInfo.step}/05</span>
+          <span id="cyber-wizard-title" class="cyber-wizard-step-name">${wizardInfo.title}</span>
         </div>
 
         <!-- 5 TABS NAVIGATION -->
         <div class="cyber-dock-tabs" role="tablist">
-          <button data-tab="0" class="cyber-tab-btn active" type="button">01. Surface</button>
-          <button data-tab="1" class="cyber-tab-btn" type="button">02. JSON</button>
-          <button data-tab="2" class="cyber-tab-btn" type="button">03. Flight</button>
-          <button data-tab="3" class="cyber-tab-btn" type="button">04. Visual</button>
-          <button data-tab="4" class="cyber-tab-btn" type="button">05. .WEBM</button>
+          <button data-tab="0" class="cyber-tab-btn active" type="button">${t('tabs.tab0')}</button>
+          <button data-tab="1" class="cyber-tab-btn" type="button">${t('tabs.tab1')}</button>
+          <button data-tab="2" class="cyber-tab-btn" type="button">${t('tabs.tab2')}</button>
+          <button data-tab="3" class="cyber-tab-btn" type="button">${t('tabs.tab3')}</button>
+          <button data-tab="4" class="cyber-tab-btn" type="button">${t('tabs.tab4')}</button>
         </div>
 
         <!-- TAB BODY -->
@@ -218,10 +255,10 @@ export class SpatialControlDockUI {
         <div class="cyber-quick-tree-section">
           <div class="cyber-quick-tree-header">
             <button id="cyber-quick-tree-toggle" class="cyber-quick-tree-toggle-btn" type="button">
-              <span>▾ HUD DIRECTORY QUICK-SELECT (CLICK TO ZOOM)</span>
+              <span>${t('quicktree.header')}</span>
             </button>
             <button id="cyber-quick-unfocus-btn" class="cyber-quick-unfocus-mini hidden" type="button">
-              [ESC // UN-FOCUS]
+              ${t('quicktree.unfocusBtn')}
             </button>
           </div>
           <div id="cyber-quick-tree-list" class="cyber-quick-tree-list"></div>
@@ -229,9 +266,9 @@ export class SpatialControlDockUI {
 
         <!-- DOCK FOOTER -->
         <div class="cyber-dock-footer">
-          <span>CLICK NODE: GSAP FOCUS</span>
+          <span id="cyber-footer-hint1">${t('dock.footerHint1')}</span>
           <span>·</span>
-          <span>ESC / BG CLICK: TUNNEL</span>
+          <span id="cyber-footer-hint2">${t('dock.footerHint2')}</span>
         </div>
       </aside>
 
@@ -239,7 +276,7 @@ export class SpatialControlDockUI {
       <section class="cyber-bottom-dock">
         <div class="cyber-bottom-collapse-row">
           <button id="cyber-bottom-collapse-btn" class="cyber-collapse-pill" type="button">
-            ▾ Hide Timeline Controls
+            ${t('bottom.hideTimeline')}
           </button>
         </div>
         <div id="cyber-bottom-body" class="cyber-bottom-body">
@@ -249,7 +286,7 @@ export class SpatialControlDockUI {
               <button data-zone="${z.index}" class="cyber-zone-step-btn ${
                 z.index === 0 ? 'active' : ''
               }" type="button">
-                <span class="cyber-step-code">${z.code}: ${z.label}</span>
+                <span class="cyber-step-code">${z.code}: ${t(`zone.${z.index}.name` as TranslationKey) || z.label}</span>
                 <span class="cyber-step-range">${z.zRange}</span>
               </button>
             `
@@ -258,10 +295,10 @@ export class SpatialControlDockUI {
 
           <div class="cyber-slider-row">
             <button id="cyber-quick-autofly-btn" class="cyber-btn-swiss cyber-autofly-btn" type="button">
-              MODE: MANUAL SLIDER
+              ${t('bottom.manualModeBtn')}
             </button>
             <div class="cyber-timeline-track-wrap">
-              <span class="cyber-mono-label">Z-TUNNEL DEPTH</span>
+              <span id="cyber-bottom-zdepth-label" class="cyber-mono-label">${t('bottom.zDepth')}</span>
               <input
                 id="cyber-timeline-slider"
                 type="range"
@@ -275,7 +312,7 @@ export class SpatialControlDockUI {
               <span id="cyber-timeline-pct" class="cyber-mono-num">4%</span>
             </div>
             <button id="cyber-expand-all-quick-btn" class="cyber-btn-swiss" type="button">
-              BLOOM ALL 3D BRANCHES
+              ${t('bottom.bloomBranches')}
             </button>
           </div>
         </div>
@@ -303,6 +340,17 @@ export class SpatialControlDockUI {
       this.container.querySelectorAll('.cyber-zone-step-btn')
     );
 
+    // Mount Top Bar Cyber-Brutalism Language Switcher
+    const topLangSlot = this.container.querySelector('#cyber-top-lang-slot');
+    if (topLangSlot) {
+      topLangSlot.appendChild(createLanguageSwitcher());
+    }
+
+    // Subscribe to Language Manager to dynamically refresh all labels & tabs
+    languageManager.subscribe(() => {
+      this.refreshAllLocalizedUI();
+    });
+
     // Bind Top Bar [EXPORT AUTO-FLY CLIP (.WEBM)] button
     this.topExportBtnEl.addEventListener('click', () => {
       this.callbacks.onExportAutoFlyVideo();
@@ -328,8 +376,8 @@ export class SpatialControlDockUI {
         this.quickTreeCollapsed
       );
       this.quickNodeToggleBtnEl.innerHTML = `<span>${
-        this.quickTreeCollapsed ? '▸' : '▾'
-      } HUD DIRECTORY QUICK-SELECT (CLICK TO ZOOM)</span>`;
+        this.quickTreeCollapsed ? t('quicktree.headerCollapsed') : t('quicktree.header')
+      }</span>`;
     });
 
     this.dockToggleBtnEl.addEventListener('click', () => {
@@ -347,7 +395,7 @@ export class SpatialControlDockUI {
     audioBtn.addEventListener('click', () => {
       const nextMuted = !this.state.audioMuted;
       this.callbacks.onStateChange({ audioMuted: nextMuted });
-      audioBtn.textContent = nextMuted ? 'AUDIO: MUTED' : 'AUDIO: ON';
+      audioBtn.textContent = nextMuted ? t('topbar.audioMuted') : t('topbar.audioOn');
     });
 
     const tabBtns = Array.from(
@@ -358,6 +406,7 @@ export class SpatialControlDockUI {
         const idx = Number(btn.dataset.tab) as 0 | 1 | 2 | 3 | 4;
         this.activeTab = idx;
         tabBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+        this.updateWizardBanner();
         this.renderTabContent();
       });
     });
@@ -408,16 +457,16 @@ export class SpatialControlDockUI {
       allExpanded = !allExpanded;
       this.callbacks.onExpandCollapseAll(allExpanded);
       expandAllQuickBtn.textContent = allExpanded
-        ? 'COLLAPSE 3D BRANCHES'
-        : 'BLOOM ALL 3D BRANCHES';
+        ? t('bottom.collapseBranches')
+        : t('bottom.bloomBranches');
     });
 
     this.bottomCollapseBtnEl.addEventListener('click', () => {
       this.bottomHudCollapsed = !this.bottomHudCollapsed;
       this.bottomBarBodyEl.classList.toggle('collapsed', this.bottomHudCollapsed);
       this.bottomCollapseBtnEl.textContent = this.bottomHudCollapsed
-        ? '▴ Show Timeline Controls'
-        : '▾ Hide Timeline Controls';
+        ? t('bottom.showTimeline')
+        : t('bottom.hideTimeline');
     });
 
     this.renderTabContent();
@@ -426,12 +475,97 @@ export class SpatialControlDockUI {
     this.syncCameraModeUI();
   }
 
+  public refreshAllLocalizedUI(): void {
+    if (this.dockToggleBtnEl) {
+      this.dockToggleBtnEl.textContent = this.dockCollapsed
+        ? t('topbar.dockToggleCollapsed')
+        : t('topbar.dockToggle');
+    }
+    if (this.topExportBtnEl) {
+      this.topExportBtnEl.textContent = this.state.isRecordingVideo
+        ? `[RECORDING: ${Math.round(this.state.recordingProgress)}%] // 60 FPS`
+        : t('topbar.exportBtn');
+    }
+    const audioBtn = this.container.querySelector(
+      '#cyber-audio-btn'
+    ) as HTMLButtonElement | null;
+    if (audioBtn) {
+      audioBtn.textContent = this.state.audioMuted ? t('topbar.audioMuted') : t('topbar.audioOn');
+    }
+    this.syncCameraModeUI();
+
+    const dockKicker = this.container.querySelector('.cyber-dock-kicker');
+    if (dockKicker) dockKicker.textContent = t('dock.kicker');
+    const dockHeading = this.container.querySelector('.cyber-dock-heading');
+    if (dockHeading) dockHeading.textContent = t('dock.heading');
+    const dockCloseBtn = this.container.querySelector('#cyber-dock-close-btn') as HTMLButtonElement | null;
+    if (dockCloseBtn) {
+      dockCloseBtn.textContent = t('dock.collapseBtn');
+      dockCloseBtn.title = t('dock.collapseBtn');
+    }
+
+    this.updateWizardBanner();
+
+    const tabBtns = Array.from(
+      this.container.querySelectorAll('.cyber-tab-btn')
+    ) as HTMLButtonElement[];
+    if (tabBtns.length >= 5) {
+      tabBtns[0].textContent = t('tabs.tab0');
+      tabBtns[1].textContent = t('tabs.tab1');
+      tabBtns[2].textContent = t('tabs.tab2');
+      tabBtns[3].textContent = t('tabs.tab3');
+      tabBtns[4].textContent = t('tabs.tab4');
+    }
+
+    this.renderTabContent();
+
+    if (this.quickNodeToggleBtnEl) {
+      this.quickNodeToggleBtnEl.innerHTML = `<span>${
+        this.quickTreeCollapsed ? t('quicktree.headerCollapsed') : t('quicktree.header')
+      }</span>`;
+    }
+    const miniUnfocusBtn = this.container.querySelector('#cyber-quick-unfocus-btn');
+    if (miniUnfocusBtn) {
+      miniUnfocusBtn.textContent = t('quicktree.unfocusBtn');
+    }
+
+    const fHint1 = this.container.querySelector('#cyber-footer-hint1');
+    if (fHint1) fHint1.textContent = t('dock.footerHint1');
+    const fHint2 = this.container.querySelector('#cyber-footer-hint2');
+    if (fHint2) fHint2.textContent = t('dock.footerHint2');
+
+    const escKicker = this.container.querySelector('#cyber-esc-kicker');
+    if (escKicker) escKicker.textContent = t('esc.kicker');
+    const escReturnBtn = this.container.querySelector('#cyber-esc-return-btn');
+    if (escReturnBtn) escReturnBtn.textContent = t('esc.returnBtn');
+
+    if (this.bottomCollapseBtnEl) {
+      this.bottomCollapseBtnEl.textContent = this.bottomHudCollapsed
+        ? t('bottom.showTimeline')
+        : t('bottom.hideTimeline');
+    }
+    const zDepthLabel = this.container.querySelector('#cyber-bottom-zdepth-label');
+    if (zDepthLabel) zDepthLabel.textContent = t('bottom.zDepth');
+    this.syncBottomFlightModeButton();
+
+    this.zoneStepButtons.forEach((btn, idx) => {
+      const z = ZONE_MARKERS[idx];
+      if (z) {
+        const stepCode = btn.querySelector('.cyber-step-code');
+        if (stepCode) {
+          const locName = t(`zone.${z.index}.name` as TranslationKey) || z.label;
+          stepCode.textContent = `${z.code}: ${locName}`;
+        }
+      }
+    });
+  }
+
   public toggleDock(collapse: boolean): void {
     this.dockCollapsed = collapse;
     this.dockPanelEl.classList.toggle('collapsed', this.dockCollapsed);
     this.dockToggleBtnEl.textContent = this.dockCollapsed
-      ? '[SYS//CONFIG DOCK ▸]'
-      : '[SYS//CONFIG DOCK ▾]';
+      ? t('topbar.dockToggleCollapsed')
+      : t('topbar.dockToggle');
   }
 
   private syncBottomFlightModeButton(): void {
@@ -440,12 +574,12 @@ export class SpatialControlDockUI {
     ) as HTMLButtonElement | null;
     if (!btn) return;
     if (this.state.cameraMode === 'NODE_INSPECT_MODE') {
-      btn.textContent = '[ESC // RETURN TO TUNNEL]';
+      btn.textContent = t('bottom.returnEscBtn');
       btn.classList.add('cyber-btn-accent');
       return;
     }
     const isAuto = this.state.flightMode === 'AUTO-FLY';
-    btn.textContent = isAuto ? 'CRUISE: AUTO-FLY [ACTIVE]' : 'MODE: MANUAL SLIDER';
+    btn.textContent = isAuto ? t('bottom.autoModeBtn') : t('bottom.manualModeBtn');
     btn.classList.toggle('cyber-btn-accent', isAuto);
   }
 
@@ -462,8 +596,8 @@ export class SpatialControlDockUI {
     }
     if (this.camModeBadgeEl) {
       this.camModeBadgeEl.textContent = isInspect
-        ? 'MODE B: NODE INSPECT FOCUS'
-        : 'MODE A: TUNNEL FLIGHT';
+        ? t('topbar.modeInspect')
+        : t('topbar.modeTunnel');
       this.camModeBadgeEl.classList.toggle('mode-inspect', isInspect);
       this.camModeBadgeEl.classList.toggle('mode-tunnel', !isInspect);
     }
@@ -471,7 +605,7 @@ export class SpatialControlDockUI {
       const anchorPct = Math.round(this.state.anchorProgress * 100);
       const anchorZ = 10.2 + ( -7.6 - 10.2 ) * this.state.anchorProgress;
       const sign = anchorZ >= 0 ? '+' : '';
-      this.escReturnAnchorLabelEl.textContent = `ANCHOR SAVED: ${anchorPct}% (Z = ${sign}${anchorZ.toFixed(
+      this.escReturnAnchorLabelEl.textContent = `${t('esc.anchorSaved')}: ${anchorPct}% (Z = ${sign}${anchorZ.toFixed(
         2
       )}m)`;
     }
@@ -581,9 +715,9 @@ export class SpatialControlDockUI {
 
       body.innerHTML = `
         <div class="cyber-tab-section">
-          <div class="cyber-section-title">Tab 01 · Sequential 4-Screen Surface Swapper</div>
+          <div class="cyber-section-title">${t('tabs.tab0.title')}</div>
           <p class="cyber-helper-text">
-            Chọn màn hình (01 → 04) hoặc bật <strong>Tự động chuyển màn hình</strong> để tải ảnh lên thay thế lần lượt từng màn hình 3D.
+            ${t('tab0.helper')}
           </p>
 
           <!-- 4 SCREEN SLOT SELECTOR GRID -->
@@ -595,25 +729,25 @@ export class SpatialControlDockUI {
                 slot.slotIndex === activeSlotIdx ? 'active' : ''
               }" data-slot-card="${slot.slotIndex}">
                 <div class="cyber-slot-card-top">
-                  <span class="cyber-slot-num">MÀN HÌNH 0${
+                  <span class="cyber-slot-num">${t('tab0.screenSlotPrefix')}${
                     slot.slotIndex + 1
                   }</span>
                   <button type="button" class="cyber-slot-upload-mini" data-upload-slot="${
                     slot.slotIndex
                   }">
-                    Tải Ảnh ▴
+                    ${t('tab0.uploadMini')}
                   </button>
                 </div>
                 <div class="cyber-slot-thumb-wrap">
                   <img src="${slot.imageUrl}" alt="${escapeAttr(
-                  slot.label
+                  slot.label_vi && languageManager.getLanguage() === 'vi' ? slot.label_vi : slot.label
                 )}" referrerpolicy="no-referrer" class="cyber-slot-thumb" />
                   <div class="cyber-slot-thumb-fallback">${escapeAttr(
-                    slot.badge
+                    slot.badge_vi && languageManager.getLanguage() === 'vi' ? slot.badge_vi : slot.badge
                   )}</div>
                 </div>
                 <span class="cyber-slot-caption">${escapeAttr(
-                  slot.badge
+                  slot.badge_vi && languageManager.getLanguage() === 'vi' ? slot.badge_vi : slot.badge
                 )}</span>
               </div>
             `
@@ -624,59 +758,59 @@ export class SpatialControlDockUI {
           <button id="ui-auto-advance-btn" class="cyber-btn-swiss ${
             this.state.autoAdvanceScreenSlot ? 'cyber-btn-accent' : ''
           }" type="button">
-            CHẾ ĐỘ TẢI LẦN LƯỢT (01→02→03→04): ${
-              this.state.autoAdvanceScreenSlot ? 'BẬT' : 'TẮT'
+            ${
+              this.state.autoAdvanceScreenSlot
+                ? t('tab0.autoAdvanceBtnOn')
+                : t('tab0.autoAdvanceBtnOff')
             }
           </button>
 
           <div class="cyber-dropzone" id="ui-image-dropzone">
-            <span>KÉO THẢ HOẶC CLICK TẢI ẢNH CHO [MÀN HÌNH 0${
-              activeSlotIdx + 1
-            }] (Hỗ trợ chọn nhiều ảnh cùng lúc để thay lần lượt)</span>
+            <span>${t('tab0.dropzone', { slot: activeSlotIdx + 1 })}</span>
             <input id="ui-image-file-input" type="file" accept="image/*" multiple style="display:none" />
           </div>
 
-          <label class="cyber-field-label">Preset Gốc ArtificialCraft.space (Gán vào Màn Hình 0${
-            activeSlotIdx + 1
-          })</label>
+          <label class="cyber-field-label">${t('tab0.presetLabel', {
+            slot: activeSlotIdx + 1,
+          })}</label>
           <div class="cyber-btn-row">
             <button data-preset="${
               PLAYGROUND_SCREENSHOTS.monolith3D
             }" class="cyber-btn-swiss preset-slot-btn" type="button">
-              Node 01: Monolith
+              ${t('tab0.presetNode1')}
             </button>
             <button data-preset="${
               PLAYGROUND_SCREENSHOTS.remotion60
             }" class="cyber-btn-swiss preset-slot-btn" type="button">
-              Node 02: Remotion
+              ${t('tab0.presetNode2')}
             </button>
             <button data-preset="${
               PLAYGROUND_SCREENSHOTS.bannerStudio
             }" class="cyber-btn-swiss preset-slot-btn" type="button">
-              Node 03: Banner
+              ${t('tab0.presetNode3')}
             </button>
           </div>
 
-          <label class="cyber-field-label">Tiêu Đề Màn Hình 0${
-            activeSlotIdx + 1
-          }</label>
+          <label class="cyber-field-label">${t('tab0.titleLabel', {
+            slot: activeSlotIdx + 1,
+          })}</label>
           <input id="ui-swap-title" class="cyber-text-input" type="text" value="${escapeAttr(
             activeSlot.nodeTitle
           )}" />
 
-          <label class="cyber-field-label">Phụ Đề Telemetry Màn Hình 0${
-            activeSlotIdx + 1
-          }</label>
+          <label class="cyber-field-label">${t('tab0.subtitleLabel', {
+            slot: activeSlotIdx + 1,
+          })}</label>
           <input id="ui-swap-subtitle" class="cyber-text-input" type="text" value="${escapeAttr(
             activeSlot.subtitle
           )}" />
 
           <div class="cyber-btn-row">
             <button id="ui-apply-btn" class="cyber-btn-swiss cyber-btn-accent" type="button">
-              Cập Nhật Màn Hình 0${activeSlotIdx + 1}
+              ${t('tab0.applyBtn', { slot: activeSlotIdx + 1 })}
             </button>
             <button id="ui-focus-zone1-btn" class="cyber-btn-swiss" type="button">
-              Bay Tới Zone 01
+              ${t('tab0.flyZone1Btn')}
             </button>
           </div>
         </div>
@@ -784,22 +918,22 @@ export class SpatialControlDockUI {
     } else if (this.activeTab === 1) {
       body.innerHTML = `
         <div class="cyber-tab-section">
-          <div class="cyber-section-title">Tab 02 · Spatial Tree AST (repository-tree.json)</div>
+          <div class="cyber-section-title">${t('tabs.tab1.title')}</div>
           <p class="cyber-helper-text">
-            Hỗ trợ đầy đủ schema <code>systemIdentity</code>, <code>tree</code>, <code>layer: foreground | midground</code>, <code>colorHex</code>, <code>zodValidated</code>, <code>registeredPresets</code>.
+            ${t('tab1.helper')}
           </p>
 
           <div class="cyber-dropzone" id="tree-json-dropzone">
-            <span>KÉO THẢ HOẶC CLICK TẢI TỆP <code>repository-tree.json</code></span>
+            <span>${t('tab1.dropzone')}</span>
             <input id="tree-json-file-input" type="file" accept=".json,application/json" style="display:none" />
           </div>
 
           <div class="cyber-btn-row">
             <button id="tree-expand-all-btn" class="cyber-btn-swiss cyber-btn-accent" type="button">
-              Bloom All Branches
+              ${t('tab1.expandAll')}
             </button>
             <button id="tree-collapse-all-btn" class="cyber-btn-swiss" type="button">
-              Collapse to Buds
+              ${t('tab1.collapseAll')}
             </button>
           </div>
 
@@ -808,15 +942,15 @@ export class SpatialControlDockUI {
           }</textarea>
 
           <div id="tree-zod-status" class="cyber-status-strip">
-            SYSTEM: ${escapeAttr(this.state.systemIdentity)} · ZOD PARSER READY
+            ${t('tab1.systemReady', { sys: escapeAttr(this.state.systemIdentity) })}
           </div>
 
           <div class="cyber-btn-row">
             <button id="tree-sync-btn" class="cyber-btn-swiss cyber-btn-accent" type="button">
-              Parse &amp; Bloom 3D Tree
+              ${t('tab1.parseSyncBtn')}
             </button>
             <button id="tree-reset-default-btn" class="cyber-btn-swiss" type="button">
-              Restore Official SSOT JSON
+              ${t('tab1.resetDefaultBtn')}
             </button>
           </div>
         </div>
@@ -836,12 +970,15 @@ export class SpatialControlDockUI {
           const totalNodes = countTreeNodes(rootNode);
           this.syncTreeRoot(rootNode);
           this.callbacks.onSyncDirectoryJson(rootNode, docMeta);
-          this.jsonStatusEl.textContent = `ZOD VERIFIED: ${docMeta.systemIdentity} · ${totalNodes} NODES BLOOMED`;
+          this.jsonStatusEl.textContent = t('tab1.zodVerified', {
+            sys: docMeta.systemIdentity,
+            count: totalNodes,
+          });
           this.callbacks.onJumpToZone(2);
         } catch (err) {
-          this.jsonStatusEl.textContent = `ZOD VALIDATION ERROR: ${
-            err instanceof Error ? err.message : 'Invalid JSON format'
-          }`;
+          this.jsonStatusEl.textContent = t('tab1.zodError', {
+            err: err instanceof Error ? err.message : 'Invalid JSON format',
+          });
         }
       };
 
@@ -910,26 +1047,26 @@ export class SpatialControlDockUI {
       const isAuto = this.state.flightMode === 'AUTO-FLY';
       body.innerHTML = `
         <div class="cyber-tab-section">
-          <div class="cyber-section-title">Tab 03 · Flight Cam &amp; Auto-Fly Video Exporter</div>
+          <div class="cyber-section-title">${t('tabs.tab2.title')}</div>
           <p class="cyber-helper-text">
-            Switch between Cruise Auto-Fly and Manual Timeline Control, or export a 6-second 60 FPS <code>.webm</code> motion clip.
+            ${t('tab2.helper')}
           </p>
 
           <div class="cyber-btn-row">
             <button id="cam-mode-auto" class="cyber-btn-swiss ${
               isAuto ? 'cyber-btn-accent' : ''
             }" type="button">
-              AUTO-FLY CRUISE
+              ${t('tab2.modeAuto')}
             </button>
             <button id="cam-mode-manual" class="cyber-btn-swiss ${
               !isAuto ? 'cyber-btn-accent' : ''
             }" type="button">
-              MANUAL SLIDER
+              ${t('tab2.modeManual')}
             </button>
           </div>
 
           <label class="cyber-field-label">
-            Cruise Velocity Multiplier: <span id="vel-val" class="cyber-mono-num">${this.state.flightVelocity.toFixed(
+            ${t('tab2.velocityLabel')} <span id="vel-val" class="cyber-mono-num">${this.state.flightVelocity.toFixed(
               2
             )}x</span>
           </label>
@@ -938,7 +1075,7 @@ export class SpatialControlDockUI {
           }" class="cyber-range-input" />
 
           <label class="cyber-field-label">
-            Camera Damping (Lerp Sensitivity): <span id="lerp-val" class="cyber-mono-num">${this.state.lerpSensitivity.toFixed(
+            ${t('tab2.dampingLabel')} <span id="lerp-val" class="cyber-mono-num">${this.state.lerpSensitivity.toFixed(
               2
             )}</span>
           </label>
@@ -981,9 +1118,12 @@ export class SpatialControlDockUI {
     } else if (this.activeTab === 3) {
       body.innerHTML = `
         <div class="cyber-tab-section">
-          <div class="cyber-section-title">Tab 04 · Deep Midnight (01:00 AM) Visuals &amp; Explode</div>
+          <div class="cyber-section-title">${t('tabs.tab3.title')}</div>
+          <p class="cyber-helper-text">
+            ${t('tab3.helper')}
+          </p>
 
-          <label class="cyber-field-label">Atmosphere &amp; Material Presets</label>
+          <label class="cyber-field-label">${t('tab3.presetsLabel')}</label>
           <div class="cyber-swatch-grid">
             ${(Object.keys(THEME_PALETTES) as ThemePresetId[])
               .map((id) => {
@@ -1004,7 +1144,7 @@ export class SpatialControlDockUI {
           </div>
 
           <label class="cyber-field-label">
-            Exploded View Z/Y Spacing: <span id="explode-val" class="cyber-mono-num">${this.state.explodedScale.toFixed(
+            ${t('tab3.explodeLabel')} <span id="explode-val" class="cyber-mono-num">${this.state.explodedScale.toFixed(
               2
             )}x</span>
           </label>
@@ -1013,16 +1153,16 @@ export class SpatialControlDockUI {
           }" class="cyber-range-input" />
 
           <label class="cyber-field-label">
-            Binary Matrix Galaxy &amp; Skyvault Density: <span id="star-val" class="cyber-mono-num">${
+            ${t('tab3.starLabel')} <span id="star-val" class="cyber-mono-num">${
               this.state.starDensity
-            } nodes</span>
+            } ${t('tab3.nodesUnit')}</span>
           </label>
           <input id="fx-star-slider" type="range" min="150" max="900" step="50" value="${
             this.state.starDensity
           }" class="cyber-range-input" />
 
           <label class="cyber-field-label">
-            Indigo Rim &amp; Laser Bloom Halo: <span id="bloom-val" class="cyber-mono-num">${this.state.bloomStrength.toFixed(
+            ${t('tab3.bloomLabel')} <span id="bloom-val" class="cyber-mono-num">${this.state.bloomStrength.toFixed(
               2
             )}</span>
           </label>
@@ -1034,8 +1174,10 @@ export class SpatialControlDockUI {
             <button id="fx-fog-toggle" class="cyber-btn-swiss ${
               this.state.fogEnabled ? 'cyber-btn-accent' : ''
             }" type="button">
-              ELECTRO-VOLUMETRIC FOG (0.012): ${
-                this.state.fogEnabled ? 'ON' : 'OFF'
+              ${
+                this.state.fogEnabled
+                  ? t('tab3.fogToggleOn')
+                  : t('tab3.fogToggleOff')
               }
             </button>
           </div>
@@ -1067,7 +1209,7 @@ export class SpatialControlDockUI {
       const starVal = body.querySelector('#star-val') as HTMLElement;
       starSlider.addEventListener('input', () => {
         const s = Number(starSlider.value);
-        starVal.textContent = `${s} nodes`;
+        starVal.textContent = `${s} ${t('tab3.nodesUnit')}`;
         this.callbacks.onStateChange({ starDensity: s });
       });
 
@@ -1088,9 +1230,9 @@ export class SpatialControlDockUI {
     } else if (this.activeTab === 4) {
       body.innerHTML = `
         <div class="cyber-tab-section">
-          <div class="cyber-section-title">Tab 05 · Client-Side Auto-Fly Motion Exporter (.WEBM)</div>
+          <div class="cyber-section-title">${t('tabs.tab4.title')}</div>
           <p class="cyber-helper-text">
-            Zero-server-cost (<code>$0.00</code>) WebGL canvas video recorder. Captures a full 6-second 60 FPS fly-through from <strong>Zone 01 (Z = +10m)</strong> to <strong>Zone 04 (Z = -8m)</strong> encoded with VP9 at 3.0 Mbps (~2MB output).
+            ${t('tab4.helper')}
           </p>
           ${this.buildVideoExporterWidgetHTML()}
         </div>
@@ -1132,12 +1274,12 @@ export class SpatialControlDockUI {
             />
           </svg>
           <div class="cyber-exporter-meta">
-            <span class="cyber-exporter-kicker">CLIENT-SIDE WEBCODECS / MEDIARECORDER</span>
+            <span class="cyber-exporter-kicker">${t('exporter.kicker')}</span>
             <span id="cyber-export-live-readout" class="cyber-exporter-readout">
               ${
                 isRec
-                  ? `[RECORDING: ${pct}%] // 60 FPS`
-                  : 'VP9 · 3.0 Mbps · 60 FPS (~2MB .WEBM)'
+                  ? t('exporter.recReadout', { pct })
+                  : t('exporter.readyReadout')
               }
             </span>
           </div>
@@ -1152,13 +1294,13 @@ export class SpatialControlDockUI {
         >
           ${
             isRec
-              ? `[RECORDING: ${pct}%] // 60 FPS (CLICK TO STOP & SAVE)`
-              : '[EXPORT AUTO-FLY CLIP (.WEBM)]'
+              ? t('exporter.mainBtnRec', { pct })
+              : t('exporter.mainBtnReady')
           }
         </button>
 
         <div id="cyber-export-status-strip" class="cyber-status-strip">
-          ${escapeAttr(this.lastExportStatusMsg)}
+          ${escapeAttr(this.lastExportStatusMsg || t('exporter.statusReady'))}
         </div>
       </div>
     `;
@@ -1190,8 +1332,8 @@ export class SpatialControlDockUI {
 
     if (this.topExportBtnEl) {
       this.topExportBtnEl.textContent = isRecording
-        ? `[RECORDING: ${roundedPct}%] // 60 FPS`
-        : '[EXPORT AUTO-FLY CLIP (.WEBM)]';
+        ? t('exporter.recReadout', { pct: roundedPct })
+        : t('exporter.mainBtnReady');
       this.topExportBtnEl.classList.toggle('recording', isRecording);
     }
 
@@ -1200,8 +1342,8 @@ export class SpatialControlDockUI {
     ) as HTMLButtonElement | null;
     if (dockBtn) {
       dockBtn.textContent = isRecording
-        ? `[RECORDING: ${roundedPct}%] // 60 FPS (CLICK TO STOP & SAVE)`
-        : '[EXPORT AUTO-FLY CLIP (.WEBM)]';
+        ? t('exporter.mainBtnRec', { pct: roundedPct })
+        : t('exporter.mainBtnReady');
       dockBtn.classList.toggle('recording', isRecording);
     }
 
@@ -1210,8 +1352,8 @@ export class SpatialControlDockUI {
     ) as HTMLElement | null;
     if (readoutEl) {
       readoutEl.textContent = isRecording
-        ? `[RECORDING: ${roundedPct}%] // 60 FPS`
-        : 'VP9 · 3.0 Mbps · 60 FPS (~2MB .WEBM)';
+        ? t('exporter.recReadout', { pct: roundedPct })
+        : t('exporter.readyReadout');
     }
 
     const ringCircle = this.container.querySelector(

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as xb from 'xrblocks';
 import { DirectoryNode } from './types';
+import { languageManager, t } from './i18n/languageManager';
 
 /**
  * World-space 3D Hologram Glass Card built with XR Blocks `xb.UICard`.
@@ -19,6 +20,10 @@ export class SpatialInspectorCard {
   private returnTunnelButton: xb.UIButton;
   private onToggleBranch: () => void;
   private onReturnToTunnel: () => void;
+
+  private currentNode: DirectoryNode | null = null;
+  private currentWorldPos?: THREE.Vector3;
+  private currentFocusedMode = false;
 
   constructor(onToggleBranch: () => void, onReturnToTunnel: () => void) {
     this.onToggleBranch = onToggleBranch;
@@ -53,7 +58,7 @@ export class SpatialInspectorCard {
     });
 
     this.pathText = new xb.UIText({
-      text: 'PATH: /src/core/registry.ts  ·  LAYER: MIDGROUND',
+      text: `${t('card.pathPrefix')} /src/core/registry.ts  ·  ${t('card.layerPrefix')} MIDGROUND`,
       style: {
         fontSize: 13,
         color: '#94A3B8',
@@ -70,7 +75,7 @@ export class SpatialInspectorCard {
     });
 
     this.zodText = new xb.UIText({
-      text: 'ZOD CONTRACT:\nz.enum(["swiss-hud", "isometric-matrix", "bento-3d", "logarithmic-spiral"])',
+      text: `${t('card.zodContract')}\nz.enum(["swiss-hud", "isometric-matrix", "bento-3d", "logarithmic-spiral"])`,
       style: {
         width: '100%',
         padding: 10,
@@ -98,7 +103,7 @@ export class SpatialInspectorCard {
     });
 
     this.branchButton = new xb.UIButton({
-      label: 'Toggle Branch',
+      label: t('card.toggleBranch'),
       icon: 'account_tree',
       style: {
         flexGrow: 1,
@@ -109,7 +114,7 @@ export class SpatialInspectorCard {
     });
 
     this.returnTunnelButton = new xb.UIButton({
-      label: 'ESC // Tunnel',
+      label: t('card.returnTunnel'),
       icon: 'flight_takeoff',
       style: {
         flexGrow: 1,
@@ -153,6 +158,12 @@ export class SpatialInspectorCard {
     this.card.position.set(1.38, 1.72, -1.55);
     this.card.rotation.y = -0.22;
     this.card.renderOrder = 30;
+
+    languageManager.subscribe(() => {
+      if (this.currentNode) {
+        this.updateNode(this.currentNode, this.currentWorldPos, this.currentFocusedMode);
+      }
+    });
   }
 
   public updateNode(
@@ -160,25 +171,30 @@ export class SpatialInspectorCard {
     worldPos?: THREE.Vector3,
     isFocusedMode = false
   ): void {
+    this.currentNode = node;
+    this.currentWorldPos = worldPos;
+    this.currentFocusedMode = isFocusedMode;
+
     this.titleText.text = node.name;
     this.titleText.style.color = node.colorHex || '#00E5FF';
     this.tokenBadgeText.text = `${(
       node.layer || 'midground'
     ).toUpperCase()} · ${node.tokenEstimate || `~${node.tokens} tokens`}`;
-    this.pathText.text = `PATH: ${node.path}  ·  ${
-      node.kind === 'folder' ? 'DIRECTORY' : 'FILE'
-    }  ·  COLOR: ${node.colorHex}`;
+    this.pathText.text = `${t('card.pathPrefix')} ${node.path}  ·  ${
+      node.kind === 'folder' ? t('card.dirBadge') : t('card.fileBadge')
+    }  ·  ${t('card.colorPrefix')} ${node.colorHex}`;
     this.roleText.text = node.role;
-    this.zodText.text = `ZOD CONTRACT:\n${
+    this.zodText.text = `${t('card.zodContract')}\n${
       node.zodContract || 'z.object({ valid: z.literal(true) })'
     }`;
     this.codeText.text = node.tsInterface;
     this.branchButton.label =
       node.kind === 'folder'
         ? node.expanded
-          ? 'Collapse Branch'
-          : 'Bloom Branch'
-        : 'Pulse Tendril';
+          ? t('card.collapseBranch')
+          : t('card.bloomBranch')
+        : t('card.pulseTendril');
+    this.returnTunnelButton.label = t('card.returnTunnel');
 
     if (worldPos) {
       if (isFocusedMode) {

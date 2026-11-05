@@ -21,9 +21,17 @@ export interface ThemePalette {
 export interface ScreenSlotConfig {
   slotIndex: 0 | 1 | 2 | 3;
   label: string;
+  label_vi?: string;
+  label_en?: string;
   nodeTitle: string;
+  nodeTitle_vi?: string;
+  nodeTitle_en?: string;
   subtitle: string;
+  subtitle_vi?: string;
+  subtitle_en?: string;
   badge: string;
+  badge_vi?: string;
+  badge_en?: string;
   imageUrl: string;
   accentCss: string;
 }
@@ -34,6 +42,8 @@ export interface ScreenSlotConfig {
 export interface RawSpatialTreeNode {
   id?: string;
   label?: string;
+  label_vi?: string;
+  label_en?: string;
   name?: string;
   type?: 'directory' | 'file' | 'folder';
   kind?: 'folder' | 'file';
@@ -41,7 +51,11 @@ export interface RawSpatialTreeNode {
   zone?: string;
   layer?: SpatialLayerType;
   description?: string;
+  description_vi?: string;
+  description_en?: string;
   role?: string;
+  role_vi?: string;
+  role_en?: string;
   tokenEstimate?: string;
   tokens?: number;
   colorHex?: string;
@@ -90,7 +104,11 @@ export interface ExplodedComponentSpec {
   filePath: string;
   fpsTarget: string;
   badge: string;
+  badge_vi?: string;
+  badge_en?: string;
   description: string;
+  description_vi?: string;
+  description_en?: string;
   zPos: number;
   xPos: number;
   yPos: number;

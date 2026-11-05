@@ -1,0 +1,91 @@
+{
+  "systemIdentity_vi": "ARTIFICIAL CRAFT (CRAFT//CODE) - KHÔNG GIAN TRÌNH DIỄN 3D",
+  "systemIdentity_en": "ARTIFICIAL CRAFT (CRAFT//CODE) - 3D PRESENTATION ENGINE",
+  "targetPlatform": "https://artificialcraft.space/",
+  "architecturalParadigm_vi": "Kiến Trúc Điều Khiển Bằng JSON 0-Code & Hệ Thống 3 Tầng Phân Tách",
+  "architecturalParadigm_en": "0-Code JSON-Driven Architecture & Decoupled 3-Tier System",
+  "screenSlots": [
+    {
+      "slotIndex": 0,
+      "label_vi": "Màn Hình 01 · NÚT 01: KHỐI MONOLITH 3D",
+      "label_en": "Screen 01 · NODE 01: 3D MONOLITH",
+      "nodeTitle_vi": "ARTIFICIALCRAFT // KHỐI MONOLITH 60FPS",
+      "nodeTitle_en": "ARTIFICIALCRAFT // MONOLITH 60FPS",
+      "subtitle_vi": "Phân Chia Quyền Lực: Dify Điều Phối Trí Tuệ → n8n Thực Thi Nhiệm Vụ",
+      "subtitle_en": "Separation of Powers: Dify Orchestrates Cognition → n8n Executes Worker Tasks",
+      "badge_vi": "NÚT 01: KHỐI MONOLITH 3D",
+      "badge_en": "NODE 01: 3D MONOLITH",
+      "accentCss": "#00E5FF"
+    },
+    {
+      "slotIndex": 1,
+      "label_vi": "Màn Hình 02 · NÚT 02: REMOTION 60FPS",
+      "label_en": "Screen 02 · NODE 02: REMOTION",
+      "nodeTitle_vi": "LẮP RÁP LEGO 4 VỊ TRÍ // KHUNG HYPERBOLIC LATTICE",
+      "nodeTitle_en": "4-SLOT LEGO ASSEMBLY // HYPERBOLIC LATTICE",
+      "subtitle_vi": "Bộ Định Trình Khung Hình 60 FPS & Bảng Soi Tham Số 3D",
+      "subtitle_en": "60 FPS Stage Frame Sequencer & 3D Parametric Inspector",
+      "badge_vi": "NÚT 02: REMOTION 60FPS",
+      "badge_en": "NODE 02: REMOTION 60FPS",
+      "accentCss": "#5322FF"
+    },
+    {
+      "slotIndex": 2,
+      "label_vi": "Màn Hình 03 · NÚT 03: BANNER STUDIO",
+      "label_en": "Screen 03 · NODE 03: BANNER STUDIO",
+      "nodeTitle_vi": "STUDIO BANNER LINKEDIN CẮM VÀ CHẠY",
+      "nodeTitle_en": "PLUG & PLAY STUDIO BANNER LINKEDIN",
+      "subtitle_vi": "Thuật Toán Di Truyền Hoạt Động // Động Cơ Canvas v3.0 // Lưới Thụy Sỹ",
+      "subtitle_en": "Genetic Algorithm Active // Canvas Engine v3.0 // Swiss Grid Resolution",
+      "badge_vi": "NÚT 03: BANNER STUDIO",
+      "badge_en": "NODE 03: BANNER STUDIO",
+      "accentCss": "#10B981"
+    },
+    {
+      "slotIndex": 3,
+      "label_vi": "Màn Hình 04 · NHÀ MÁY STUDIO & TRIỂN KHAI",
+      "label_en": "Screen 04 · STUDIO FACTORY & DEPLOY",
+      "nodeTitle_vi": "TRIỂN KHAI AGENT ĐẦU TIÊN CỦA BẠN TRONG 90 GIÂY",
+      "nodeTitle_en": "SHIP YOUR FIRST AGENT NODE IN 90 SECONDS",
+      "subtitle_vi": "Dòng AST JSON 0-Code · CLI, Sơ Đồ Blueprint & URL Webhook",
+      "subtitle_en": "Zero-Code JSON AST Stream · CLI, Blueprint & Webhook URL",
+      "badge_vi": "NÚT 04: TRIỂN KHAI CRAFT",
+      "badge_en": "NODE 04: CRAFT DEPLOY",
+      "accentCss": "#00E5FF"
+    }
+  ],
+  "zones": [
+    {
+      "index": 0,
+      "code": "ZONE 01",
+      "label_vi": "Màn Hình Giao Diện Kính",
+      "label_en": "UI Glass Screen",
+      "summary_vi": "Màn hình kính 4 vị trí & Bộ chuyển đổi hình ảnh tuần tự",
+      "summary_en": "4-Screen Surface UI Glass Viewport & Sequential Image Swapper"
+    },
+    {
+      "index": 1,
+      "code": "ZONE 02",
+      "label_vi": "Linh Kiện Bóc Tách",
+      "label_en": "Exploded Components",
+      "summary_vi": "Khối Monolith 3D, Remotion 60FPS & Bảng Bóc Tách Linh Kiện",
+      "summary_en": "3D Monolith, Remotion 60FPS & Banner Studio Exploded Matrix"
+    },
+    {
+      "index": 2,
+      "code": "ZONE 03",
+      "label_vi": "Cây Thư Mục 3D",
+      "label_en": "3D Directory Tree",
+      "summary_vi": "Cây số hóa phân nhánh tương tác & Cổng kiểm tra Zod Schema",
+      "summary_en": "Interactive Digital Line-Branching Tree & Zod Validation Gate"
+    },
+    {
+      "index": 3,
+      "code": "ZONE 04",
+      "label_vi": "Chân Trời Lõi AI",
+      "label_en": "AI Core Horizon",
+      "summary_vi": "Não bộ Đám mây Dify.ai, Điều phối viên n8n & Vòm trời Ma trận Nhị phân",
+      "summary_en": "Dify.ai Cloud Brain, n8n Orchestrator & Binary Galaxy Sky Dome"
+    }
+  ]
+}
