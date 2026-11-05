@@ -4,6 +4,7 @@ import {
   ScreenSlotConfig,
   ThemePalette,
 } from './types';
+import { languageManager } from './i18n/languageManager';
 
 /**
  * Renders an individual Screen Slot texture for Zone 01 Surface UI Glass Screens (Slots 0..3).
@@ -106,6 +107,11 @@ export function createZone01ScreenSlotTexture(
   // Top Header Strip
   ctx.fillStyle = 'rgba(9, 9, 18, 0.96)';
   ctx.fillRect(8, 8, canvas.width - 16, 48);
+  const isVi = languageManager.getLanguage() === 'vi';
+  const displayTitle = (isVi && slot.nodeTitle_vi) ? slot.nodeTitle_vi : slot.nodeTitle;
+  const displaySubtitle = (isVi && slot.subtitle_vi) ? slot.subtitle_vi : slot.subtitle;
+  const displayBadge = (isVi && slot.badge_vi) ? slot.badge_vi : slot.badge;
+
   ctx.strokeStyle = slot.accentCss;
   ctx.lineWidth = 1.5;
   ctx.strokeRect(8, 8, canvas.width - 16, 48);
@@ -113,7 +119,7 @@ export function createZone01ScreenSlotTexture(
   ctx.fillStyle = slot.accentCss;
   ctx.font = '700 18px "JetBrains Mono", monospace';
   ctx.fillText(
-    `SCREEN 0${slot.slotIndex + 1} // ${slot.badge}`,
+    `${isVi ? 'MÀN HÌNH' : 'SCREEN'} 0${slot.slotIndex + 1} // ${displayBadge}`,
     24,
     38
   );
@@ -123,7 +129,7 @@ export function createZone01ScreenSlotTexture(
   ctx.textAlign = 'right';
   ctx.fillText(
     isSelectedSlot
-      ? '[ACTIVE SWAP TARGET · READY]'
+      ? (isVi ? '[MỤC TIÊU THAY THẾ · SẴN SÀNG]' : '[ACTIVE SWAP TARGET · READY]')
       : 'ARTIFICIALCRAFT.SPACE // 60 FPS',
     canvas.width - 24,
     38
@@ -140,11 +146,11 @@ export function createZone01ScreenSlotTexture(
 
   ctx.fillStyle = '#FFFFFF';
   ctx.font = '700 20px "JetBrains Mono", monospace';
-  ctx.fillText(slot.nodeTitle.slice(0, 44), 24, botY + 27);
+  ctx.fillText(displayTitle.slice(0, 44), 24, botY + 27);
 
   ctx.fillStyle = '#94A3B8';
   ctx.font = '400 15px "JetBrains Mono", monospace';
-  ctx.fillText(slot.subtitle.slice(0, 68), 24, botY + 50);
+  ctx.fillText(displaySubtitle.slice(0, 68), 24, botY + 50);
 
   // Outer 1px Swiss Frame
   ctx.strokeStyle = isSelectedSlot ? '#00E5FF' : palette.primaryCss;
@@ -200,13 +206,17 @@ export function createExplodedComponentTexture(
   ctx.lineWidth = 3;
   ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
 
+  const isVi = languageManager.getLanguage() === 'vi';
+  const displayBadge = (isVi && spec.badge_vi) ? spec.badge_vi : spec.badge;
+  const displayDesc = (isVi && spec.description_vi) ? spec.description_vi : spec.description;
+
   // Header strip
   ctx.fillStyle = 'rgba(20, 21, 28, 0.96)';
   ctx.fillRect(7, 7, canvas.width - 14, 54);
 
   ctx.fillStyle = hexCss;
   ctx.font = '700 18px "JetBrains Mono", monospace';
-  ctx.fillText(`${spec.badge} · ${spec.fpsTarget}`, 24, 40);
+  ctx.fillText(`${displayBadge} · ${spec.fpsTarget}`, 24, 40);
 
   ctx.fillStyle = '#94A3B8';
   ctx.font = '500 16px "JetBrains Mono", monospace';
@@ -222,7 +232,7 @@ export function createExplodedComponentTexture(
 
   ctx.fillStyle = '#CBD5E1';
   ctx.font = '400 16px "Plus Jakarta Sans", sans-serif';
-  ctx.fillText(spec.description.slice(0, 52), 24, 134);
+  ctx.fillText(displayDesc.slice(0, 52), 24, 134);
 
   // Code box
   ctx.fillStyle = 'rgba(5, 5, 8, 0.94)';

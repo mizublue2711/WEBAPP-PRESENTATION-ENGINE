@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ArtificialCraft Presentation Engine Schema",
+  "title_vi": "Cấu Trúc Cấu Hình Công Cụ Thuyết Trình Không Gian 3D",
+  "title_en": "ArtificialCraft 3D Spatial Presentation Engine Configuration Schema",
+  "systemIdentity": "ARTIFICIAL CRAFT (CRAFT//CODE)",
+  "systemIdentity_vi": "ARTIFICIAL CRAFT (CRAFT//CODE) · HỆ THỐNG KHÔNG GIAN 3D",
+  "systemIdentity_en": "ARTIFICIAL CRAFT (CRAFT//CODE) · 3D SPATIAL SYSTEM",
+  "targetPlatform": "https://artificialcraft.space/",
+  "architecturalParadigm": "0-Code JSON-Driven Architecture & Decoupled 3-Tier System",
+  "architecturalParadigm_vi": "Kiến Trúc Điều Khiển Bằng JSON 0-Code & Hệ Thống 3 Tầng Phân Tách",
+  "architecturalParadigm_en": "0-Code JSON-Driven Architecture & Decoupled 3-Tier System",
+  "version": "2.4.0",
+  "sections": [
+    {
+      "id": "brand-identity",
+      "step": 1,
+      "title": "Brand Identification",
+      "title_vi": "Định Danh Thương Hiệu",
+      "title_en": "Brand Identification",
+      "description_vi": "Xác lập nhận diện thương hiệu, URL đích và khẩu hiệu số hóa",
+      "description_en": "Establish brand identity, target platform URL, and digital manifesto",
+      "defaultTitle": "ARTIFICIALCRAFT.SPACE",
+      "defaultSubtitle_vi": "01:00 Đêm Khuya · Studio Sáng Tạo & Ma Trận Nút Tương Tác",
+      "defaultSubtitle_en": "Deep Midnight 01:00 AM · Studio Playground & Interactive Node Matrix",
+      "tag_vi": "ĐÊM KHUYA 01:00 · TƯƠNG PHẢN ÁNH SÁNG 6500K · CỔNG KIỂM TRA ZOD",
+      "tag_en": "DEEP MIDNIGHT 01:00 AM · 6500K CHIAROSCURO · ZOD GATE"
+    },
+    {
+      "id": "aesthetic-stylist",
+      "step": 2,
+      "title": "Aesthetic & AI Stylist",
+      "title_vi": "Phong Cách & AI Stylist",
+      "title_en": "Aesthetic & AI Stylist",
+      "description_vi": "Lựa chọn bảng màu không gian Thụy Sỹ Cybernetic và quầng sáng laser",
+      "description_en": "Select cybernetic Swiss palettes, laser bloom halo, and atmospheric fog",
+      "defaultTheme": "cybernetic_swiss",
+      "themes": [
+        {
+          "id": "cybernetic_swiss",
+          "name_vi": "Đêm Khuya Huyền Bí (01:00 Sáng)",
+          "name_en": "Deep Midnight (01:00 AM)",
+          "primaryCss": "#00E5FF"
+        },
+        {
+          "id": "titanium_mono",
+          "name_vi": "Phòng Vô Trùng Titan",
+          "name_en": "Titanium Cleanroom",
+          "primaryCss": "#F4F8FF"
+        },
+        {
+          "id": "amber_gold",
+          "name_vi": "Hoàng Kim Lúc Nửa Đêm",
+          "name_en": "Midnight Amber Gold",
+          "primaryCss": "#F59E0B"
+        }
+      ]
+    },
+    {
+      "id": "3d-engine-assembly",
+      "step": 3,
+      "title": "3D Engine & Exploded Assembly",
+      "title_vi": "Mô Hình 3D & Bóc Tách Linh Kiện",
+      "title_en": "3D Engine & Exploded Assembly",
+      "description_vi": "Trình chiếu khối Monolith 60FPS, Remotion và bóc tách ma trận linh kiện",
+      "description_en": "60FPS Monolith showcase, Remotion stage sequencer, and exploded component assembly",
+      "components": [
+        {
+          "id": "comp-dynamic-renderer",
+          "title": "DynamicSectionRenderer.tsx",
+          "badge_vi": "NODE 01 · KHỐI MONOLITH 3D",
+          "badge_en": "NODE 01 · 3D MONOLITH",
+          "description_vi": "Phân chia quyền lực: Trí tuệ Dify + Khối thực thi n8n",
+          "description_en": "Separation of Powers: Dify Cognition + n8n Execution Pods"
+        },
+        {
+          "id": "comp-video-showcase",
+          "title": "VideoShowcase.tsx",
+          "badge_vi": "NODE 02 · KHUNG REMOTION 60FPS",
+          "badge_en": "NODE 02 · REMOTION 60FPS",
+          "description_vi": "Lắp ráp Lego 4 vị trí & Khung lồng không gian hyperbolic",
+          "description_en": "4-Slot Lego Assembly & Hyperbolic Lattice Cage Stage"
+        },
+        {
+          "id": "comp-flipbook-engine",
+          "title": "FlipBookEngine.tsx",
+          "badge_vi": "NODE 03 · BANNER STUDIO",
+          "badge_en": "NODE 03 · BANNER STUDIO",
+          "description_vi": "Banner cắm và chạy & Động cơ thuật toán di truyền",
+          "description_en": "Plug & Play Studio Banner & Genetic Algorithm Artifact Engine"
+        },
+        {
+          "id": "comp-studio-configurator",
+          "title": "CraftStudioConfigurator.tsx",
+          "badge_vi": "NODE 04 · TRIỂN KHAI NHANH",
+          "badge_en": "NODE 04 · CRAFT DEPLOY",
+          "description_vi": "Triển khai Agent đầu tiên trong 90s · CLI, Blueprint & Webhook",
+          "description_en": "Ship Your First Agent Node in 90s · CLI, Blueprint & Webhook"
+        }
+      ]
+    },
+    {
+      "id": "telemetry-bento",
+      "step": 4,
+      "title": "Telemetry & Bento Grid",
+      "title_vi": "Chỉ Số Telemetry & Bento Grid",
+      "title_en": "Telemetry & Bento Grid",
+      "description_vi": "Theo dõi các chỉ số thời gian thực, độ sâu trục Z và thông số hiệu năng",
+      "description_en": "Monitor real-time telemetry metrics, camera Z coordinates, and AST node counts"
+    },
+    {
+      "id": "export-hand-off",
+      "step": 5,
+      "title": "Export & Hand-off Dock",
+      "title_vi": "Bàn Giao & Xuất File AST",
+      "title_en": "Export & Hand-off Dock",
+      "description_vi": "Xuất video hành trình .webm 60 FPS chuẩn VP9 và tải AST cây thư mục",
+      "description_en": "Client-side 60 FPS .webm flight exporter and serialized AST schema hand-off"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   ThemePalette,
   ThemePresetId,
 } from './types';
+import { languageManager, SupportedLanguage } from './i18n/languageManager';
 
 export const PLAYGROUND_SCREENSHOTS = {
   monolith3D:
@@ -23,38 +24,74 @@ export const DEFAULT_SCREEN_SLOTS: ScreenSlotConfig[] = [
   {
     slotIndex: 0,
     label: 'Màn Hình 01 · NODE 01: 3D MONOLITH',
+    label_vi: 'Màn Hình 01 · NÚT 01: KHỐI MONOLITH 3D',
+    label_en: 'Screen 01 · NODE 01: 3D MONOLITH',
     nodeTitle: 'ARTIFICIALCRAFT // MONOLITH 60FPS',
+    nodeTitle_vi: 'ARTIFICIALCRAFT // KHỐI MONOLITH 60FPS',
+    nodeTitle_en: 'ARTIFICIALCRAFT // MONOLITH 60FPS',
     subtitle:
       'Separation of Powers: Dify Orchestrates Cognition → n8n Executes Worker Tasks',
+    subtitle_vi:
+      'Phân Chia Quyền Lực: Dify Điều Phối Trí Tuệ → n8n Thực Thi Nhiệm Vụ',
+    subtitle_en:
+      'Separation of Powers: Dify Orchestrates Cognition → n8n Executes Worker Tasks',
     badge: 'NODE 01: 3D MONOLITH',
+    badge_vi: 'NÚT 01: KHỐI MONOLITH 3D',
+    badge_en: 'NODE 01: 3D MONOLITH',
     imageUrl: PLAYGROUND_SCREENSHOTS.monolith3D,
     accentCss: '#00E5FF',
   },
   {
     slotIndex: 1,
     label: 'Màn Hình 02 · NODE 02: REMOTION',
+    label_vi: 'Màn Hình 02 · NÚT 02: REMOTION 60FPS',
+    label_en: 'Screen 02 · NODE 02: REMOTION 60FPS',
     nodeTitle: '4-SLOT LEGO ASSEMBLY // HYPERBOLIC LATTICE',
+    nodeTitle_vi: 'LẮP RÁP LEGO 4 VỊ TRÍ // KHUNG HYPERBOLIC LATTICE',
+    nodeTitle_en: '4-SLOT LEGO ASSEMBLY // HYPERBOLIC LATTICE',
     subtitle: '60 FPS Stage Frame Sequencer & 3D Parametric Inspector',
+    subtitle_vi: 'Bộ Định Trình Khung Hình 60 FPS & Bảng Soi Tham Số 3D',
+    subtitle_en: '60 FPS Stage Frame Sequencer & 3D Parametric Inspector',
     badge: 'NODE 02: REMOTION 60FPS',
+    badge_vi: 'NÚT 02: REMOTION 60FPS',
+    badge_en: 'NODE 02: REMOTION 60FPS',
     imageUrl: PLAYGROUND_SCREENSHOTS.remotion60,
     accentCss: '#5322FF',
   },
   {
     slotIndex: 2,
     label: 'Màn Hình 03 · NODE 03: BANNER STUDIO',
+    label_vi: 'Màn Hình 03 · NÚT 03: BANNER STUDIO',
+    label_en: 'Screen 03 · NODE 03: BANNER STUDIO',
     nodeTitle: 'PLUG & PLAY STUDIO BANNER LINKEDIN',
+    nodeTitle_vi: 'STUDIO BANNER LINKEDIN CẮM VÀ CHẠY',
+    nodeTitle_en: 'PLUG & PLAY STUDIO BANNER LINKEDIN',
     subtitle:
       'Genetic Algorithm Active // Canvas Engine v3.0 // Swiss Grid Resolution',
+    subtitle_vi:
+      'Thuật Toán Di Truyền Hoạt Động // Động Cơ Canvas v3.0 // Lưới Thụy Sỹ',
+    subtitle_en:
+      'Genetic Algorithm Active // Canvas Engine v3.0 // Swiss Grid Resolution',
     badge: 'NODE 03: BANNER STUDIO',
+    badge_vi: 'NÚT 03: BANNER STUDIO',
+    badge_en: 'NODE 03: BANNER STUDIO',
     imageUrl: PLAYGROUND_SCREENSHOTS.bannerStudio,
     accentCss: '#10B981',
   },
   {
     slotIndex: 3,
     label: 'Màn Hình 04 · STUDIO FACTORY & DEPLOY',
+    label_vi: 'Màn Hình 04 · NHÀ MÁY STUDIO & TRIỂN KHAI',
+    label_en: 'Screen 04 · STUDIO FACTORY & DEPLOY',
     nodeTitle: 'SHIP YOUR FIRST AGENT NODE IN 90 SECONDS',
+    nodeTitle_vi: 'TRIỂN KHAI AGENT ĐẦU TIÊN CỦA BẠN TRONG 90 GIÂY',
+    nodeTitle_en: 'SHIP YOUR FIRST AGENT NODE IN 90 SECONDS',
     subtitle: 'Zero-Code JSON AST Stream · CLI, Blueprint & Webhook URL',
+    subtitle_vi: 'Dòng AST JSON 0-Code · CLI, Sơ Đồ Blueprint & URL Webhook',
+    subtitle_en: 'Zero-Code JSON AST Stream · CLI, Blueprint & Webhook URL',
     badge: 'NODE 04: CRAFT DEPLOY',
+    badge_vi: 'NÚT 04: TRIỂN KHAI CRAFT',
+    badge_en: 'NODE 04: CRAFT DEPLOY',
     imageUrl: PLAYGROUND_SCREENSHOTS.monolith3D,
     accentCss: '#00E5FF',
   },
@@ -184,7 +221,11 @@ export const EXPLODED_COMPONENTS: ExplodedComponentSpec[] = [
     filePath: 'src/components/DynamicSectionRenderer.tsx',
     fpsTarget: '60 FPS MONOLITH',
     badge: 'NODE 01 · 3D MONOLITH',
+    badge_vi: 'NODE 01 · KHỐI MONOLITH 3D',
+    badge_en: 'NODE 01 · 3D MONOLITH',
     description: 'Separation of Powers: Dify Cognition + n8n Execution Pods',
+    description_vi: 'Phân chia quyền lực: Trí tuệ Dify + Khối thực thi n8n',
+    description_en: 'Separation of Powers: Dify Cognition + n8n Execution Pods',
     zPos: 3.8,
     xPos: -1.38,
     yPos: 1.85,
@@ -199,7 +240,11 @@ export const EXPLODED_COMPONENTS: ExplodedComponentSpec[] = [
     filePath: 'src/components/VideoShowcase.tsx',
     fpsTarget: '60 FPS REMOTION',
     badge: 'NODE 02 · REMOTION 60FPS',
+    badge_vi: 'NODE 02 · KHUNG REMOTION 60FPS',
+    badge_en: 'NODE 02 · REMOTION 60FPS',
     description: '4-Slot Lego Assembly & Hyperbolic Lattice Cage Stage',
+    description_vi: 'Lắp ráp Lego 4 vị trí & Khung lồng không gian hyperbolic',
+    description_en: '4-Slot Lego Assembly & Hyperbolic Lattice Cage Stage',
     zPos: 2.6,
     xPos: 1.4,
     yPos: 1.85,
@@ -214,7 +259,11 @@ export const EXPLODED_COMPONENTS: ExplodedComponentSpec[] = [
     filePath: 'src/components/flipbook/FlipBookEngine.tsx',
     fpsTarget: 'CANVAS ENGINE V3.0',
     badge: 'NODE 03 · BANNER STUDIO',
+    badge_vi: 'NODE 03 · BANNER STUDIO',
+    badge_en: 'NODE 03 · BANNER STUDIO',
     description: 'Plug & Play Studio Banner & Genetic Algorithm Artifact Engine',
+    description_vi: 'Banner cắm và chạy & Động cơ thuật toán di truyền',
+    description_en: 'Plug & Play Studio Banner & Genetic Algorithm Artifact Engine',
     zPos: 1.5,
     xPos: -1.28,
     yPos: 1.22,
@@ -229,7 +278,11 @@ export const EXPLODED_COMPONENTS: ExplodedComponentSpec[] = [
     filePath: 'src/components/studio/CraftStudioConfigurator.tsx',
     fpsTarget: 'IN-MEMORY STREAM',
     badge: 'NODE 04 · CRAFT DEPLOY',
+    badge_vi: 'NODE 04 · TRIỂN KHAI CRAFT',
+    badge_en: 'NODE 04 · CRAFT DEPLOY',
     description: 'Ship Your First Agent Node in 90s · CLI, Blueprint & Webhook',
+    description_vi: 'Triển khai Agent đầu tiên trong 90s · CLI, Blueprint & Webhook',
+    description_en: 'Ship Your First Agent Node in 90s · CLI, Blueprint & Webhook',
     zPos: 0.7,
     xPos: 1.3,
     yPos: 1.22,
@@ -501,14 +554,21 @@ export function parseSpatialRepositoryTree(
 
   const docMeta = {
     systemIdentity: String(
-      obj.systemIdentity || 'ARTIFICIAL CRAFT (CRAFT//CODE)'
+      languageManager.getLocalizedField(obj, 'systemIdentity') ||
+      obj.systemIdentity ||
+      (languageManager.getLanguage() === 'vi'
+        ? 'ARTIFICIAL CRAFT (CRAFT//CODE) · HỆ THỐNG KHÔNG GIAN 3D'
+        : 'ARTIFICIAL CRAFT (CRAFT//CODE)')
     ),
     targetPlatform: String(
       obj.targetPlatform || 'https://artificialcraft.space/'
     ),
     architecturalParadigm: String(
+      languageManager.getLocalizedField(obj, 'architecturalParadigm') ||
       obj.architecturalParadigm ||
-        '0-Code JSON-Driven Architecture & Decoupled 3-Tier System'
+      (languageManager.getLanguage() === 'vi'
+        ? 'Kiến Trúc Điều Khiển Bằng JSON 0-Code & Hệ Thống 3 Tầng Phân Tách'
+        : '0-Code JSON-Driven Architecture & Decoupled 3-Tier System')
     ),
   };
 
@@ -551,12 +611,21 @@ export function parseSpatialRepositoryTree(
         : Number((tokenEstimate.match(/\d+/) || [50])[0]);
 
     const path = String(raw.path || `/${label}`);
-    const role = String(
+    const localizedDesc =
+      languageManager.getLocalizedField(raw, 'description') ||
       raw.description ||
-        raw.role ||
+      languageManager.getLocalizedField(raw, 'role') ||
+      raw.role;
+    const isVi = languageManager.getLanguage() === 'vi';
+    const role = String(
+      localizedDesc ||
         (kind === 'folder'
-          ? `Spatial Directory Module (${layer.toUpperCase()})`
-          : `Spatial AST File Node (${layer.toUpperCase()})`)
+          ? (isVi
+              ? `Mô-đun Thư Mục Không Gian (${layer.toUpperCase()})`
+              : `Spatial Directory Module (${layer.toUpperCase()})`)
+          : (isVi
+              ? `Nút Tập Tin Không Gian AST (${layer.toUpperCase()})`
+              : `Spatial AST File Node (${layer.toUpperCase()})`))
     );
 
     // Synthesize rich Zod Contract & TypeScript Interface from node metadata
